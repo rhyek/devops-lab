@@ -1,0 +1,39 @@
+{
+  "name": "app-web",
+  "scripts": {
+    "dev": "PORT=3000 BROWSER=none SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "test": "react-scripts test",
+    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
+    "start": "serve -s ./build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.0.24",
+    "@types/node": "^12.12.22",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "@types/styled-components": "4.4.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "3.3.0",
+    "styled-components": "4.4.1",
+    "typescript": "^3.7.4"
+  }
+}

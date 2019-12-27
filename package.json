@@ -1,0 +1,43 @@
+{
+  "name": "devops-lab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "lerna run --parallel dev",
+    "build": "lerna run --parallel build",
+    "test:docker:up": "docker-compose -f ./envs/test/docker-compose.yml up --build -d",
+    "test:docker:down": "docker-compose -f ./envs/test/docker-compose.yml down"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "3.0.0",
+    "@types/axios": "0.14.0",
+    "@types/http-errors": "1.6.3",
+    "@types/koa": "2.11.0",
+    "@types/koa-bodyparser": "4.3.0",
+    "@types/koa-router": "7.0.42",
+    "@types/koa__cors": "2.2.3",
+    "@types/node": "13.1.0",
+    "@types/uuid": "3.4.6",
+    "@types/webpack": "4.41.0",
+    "@types/webpack-merge": "4.1.5",
+    "axios": "0.19.0",
+    "http-errors": "1.7.3",
+    "koa": "2.11.0",
+    "koa-bodyparser": "4.2.1",
+    "koa-router": "7.4.0",
+    "lerna": "^3.19.0",
+    "ts-loader": "6.2.1",
+    "ts-node": "8.5.4",
+    "typescript": "3.7.4",
+    "uuid": "3.3.3",
+    "webpack": "4.41.4",
+    "webpack-cli": "3.3.10"
+  },
+  "devDependencies": {
+    "ts-node-dev": "1.0.0-pre.44"
+  }
+}
