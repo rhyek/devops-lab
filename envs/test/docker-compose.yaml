@@ -1,10 +1,10 @@
-version: '3'
+version: '3.7'
 services:
   web:
-    build: ../../src/app-web
+    image: devops-lab/web
     ports:
       - '3000:8080'
   todos:
-    build: ../../src/service-todos
+    image: devops-lab/todos
     ports:
       - '3001:8080'

@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import TodosContext from './TodosContext';
 import TodosList from './TodosList';
 import { Todo } from '../../../../shared/types/todos';
+import backend from '../../utils/backend';
 
 const Main = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export default function Todos() {
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const load = useCallback(async () => {
-    const { data: todos } = await axios.get<Todo[]>('http://localhost:3001/todos');
+    const { data: todos } = await backend.get<Todo[]>('/todos/');
     setTodos(todos);
   }, []);
 

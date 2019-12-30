@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, FormEvent, useContext } from 'react';
-import axios from 'axios';
 import uuid from 'uuid/v4';
 import styled from 'styled-components';
 import { Todo } from '../../../../shared/types/todos';
 import TodoItem from './TodoItem';
 import TodosContext from './TodosContext';
+import backend from '../../utils/backend';
 
 const List = styled.ul`
   margin: 0;
@@ -42,7 +42,7 @@ export default function TodosList() {
       description: newTodoDescription,
       completed: false,
     };
-    await axios.post('http://localhost:3001/todos', newTodo);
+    await backend.post('/todos/', newTodo);
     load();
     setNewTodoDescription('');
   };

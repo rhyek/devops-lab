@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
-import axios from 'axios';
 import { Todo } from '../../../../shared/types/todos';
 import TodosContext from './TodosContext';
+import backend from '../../utils/backend';
 
 const Main = styled.div<{ isCompleted: boolean }>`
   display: flex;
@@ -32,7 +32,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const toggleCompleted = async () => {
     const path = completed ? 'pending' : 'completed';
     setWorking(true);
-    await axios.patch(`http://localhost:3001/todos/${id}/${path}`);
+    await backend.patch(`/todos/${id}/${path}`);
     await load();
     setWorking(false);
   };
