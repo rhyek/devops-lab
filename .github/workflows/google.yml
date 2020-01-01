@@ -63,7 +63,7 @@ jobs:
           docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
           docker push gcr.io/$GKE_PROJECT/web
           kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$GITHUB_SHA
-          kubectl annotate deployment app-web buildHash=$WEB_BUILD_HASH
+          kubectl annotate deployment app-web buildHash=$WEB_BUILD_HASH --overwrite
 
       - name: Deploy Todos
         if: env.TODOS_BUILD_HASH != env.DEPLOYED_TODOS_BUILD_HASH
@@ -71,4 +71,4 @@ jobs:
           docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
           docker push gcr.io/$GKE_PROJECT/todos
           kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA
-          kubectl annotate deployment app-web buildHash=$TODOS_BUILD_HASH
+          kubectl annotate deployment app-web buildHash=$TODOS_BUILD_HASH --overwrite
