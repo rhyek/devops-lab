@@ -53,7 +53,6 @@ jobs:
 
       - name: Build Individual
         run: |
-          echo $TODOS_BUILD_HASH
           docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
           docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
 
