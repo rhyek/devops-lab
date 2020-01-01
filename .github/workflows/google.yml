@@ -53,8 +53,8 @@ jobs:
 
       - name: Create Lean Images
         run: |
-          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
-          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
+          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
+          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
 
       - name: Publish
         run: |
