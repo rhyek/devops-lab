@@ -50,19 +50,20 @@ jobs:
           docker build -t devops-lab/builder -f ./cicd/builder.Dockerfile . | tee build.log
           echo "::set-env name=WEB_BUILD_HASH::$(grep -zoP '(?<=app-web: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
           echo "::set-env name=TODOS_BUILD_HASH::$(grep -zoP '(?<=service-todos: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
+          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
+          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
+          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
 
-      - name: Create Lean Images
-        run: |
-          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
-          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
-
-      - name: Publish
+      - name: Deploy Web
+        if: $WEB_BUILD_HASH != $(kubectl get deployment app-web -o jsonpath='{.metadata.annotations.buildHash}’)
         run: |
           docker push gcr.io/$GKE_PROJECT/web
-          docker push gcr.io/$GKE_PROJECT/todos
+          kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$GITHUB_SHA
+          kubectl annotate deployment app-web buildHash=$WEB_BUILD_HASH
 
-      - name: Deploy
+      - name: Deploy Todos
+        if: $TODOS_BUILD_HASH != $(kubectl get deployment service-todos -o jsonpath='{.metadata.annotations.buildHash}’)
         run: |
-          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
-          kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$WEB_BUILD_HASH
-          kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$TODOS_BUILD_HASH
+          docker push gcr.io/$GKE_PROJECT/todos
+          kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA
+          kubectl annotate deployment app-web buildHash=$TODOS_BUILD_HASH
