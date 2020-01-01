@@ -63,5 +63,6 @@ jobs:
 
       - name: Deploy
         run: |
+          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
           kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$WEB_BUILD_HASH
           kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$TODOS_BUILD_HASH
