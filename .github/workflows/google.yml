@@ -13,7 +13,7 @@ name: Build and Deploy to GKE
 on:
   push:
     branches:
-    - master
+      - master
 
 # Environment variables available to all jobs and steps in this workflow
 env:
@@ -28,49 +28,32 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: Checkout
-      uses: actions/checkout@master
+      # Setup gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '270.0.0'
+          service_account_email: ${{ secrets.GKE_EMAIL }}
+          service_account_key: ${{ secrets.GKE_KEY }}
 
-    # Setup gcloud CLI
-    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-      with:
-        version: '270.0.0'
-        service_account_email: ${{ secrets.GKE_EMAIL }}
-        service_account_key: ${{ secrets.GKE_KEY }}
+      # Configure docker to use the gcloud command-line tool as a credential helper
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
 
-    # Configure docker to use the gcloud command-line tool as a credential helper
-    - run: |
-        # Set up docker to authenticate
-        # via gcloud command-line tool.
-        gcloud auth configure-docker
-      
-    # Build the Docker image
-    - name: Build
-      run: docker build -t devops-lab/builder -f ./cicd/builder.Dockerfile .
-           
-  phaseTwo:
-    name: Phase Two
-    needs: [phaseOne]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: [web, todos]
-        include:
-          - app: web
-            fullName: app-web
-          - app: todos
-            fullName: service-todos
-    steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build
-      run: docker build -t devops-lab/${{ matrix.app }} -f ./src/${{ matrix.fullName }}/Dockerfile .
-    - name: Tag
-      run: docker tag devops-lab/${{ matrix.app }} gcr.io/$GKE_PROJECT/${{ matrix.app }}:$GITHUB_SHA
-    # Push the Docker image to Google Container Registry
-    - name: Publish
-      run: docker push gcr.io/$GKE_PROJECT/${{ matrix.app }}:$GITHUB_SHA
-    # Deploy the Docker image to the GKE cluster
-    - name: Deploy
-      run: kubectl set image deployments/${{ matrix.fullName }} ${{ matrix.fullName }}=gcr.io/$GKE_PROJECT/${{ matrix.app }}:$GITHUB_SHA
+      # Build the Docker images
+      - name: Build
+        run: |
+          docker build -t devops-lab/builder -f ./cicd/builder.Dockerfile . | tee build.log
+          echo "::set-env name=WEB_BUILD_HASH=$(grep -zoP '(?<=app-web: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
+          echo "::set-env name=TODOS_BUILD_HASH=$(grep -zoP '(?<=service-todos: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
+          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
+          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
+
+      - name: Publish
+        run: |
+          docker push gcr.io/$GKE_PROJECT/web
+          docker push gcr.io/$GKE_PROJECT/todos
