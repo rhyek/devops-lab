@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "lerna run --parallel dev",
-    "gen-hash": "lerna exec --parallel -- ts-node -P \\$LERNA_ROOT_PATH/tsconfig.json \\$LERNA_ROOT_PATH/cicd/gen-hash.ts",
-    "build": "lerna run --parallel build && npm run gen-hash",
+    "build": "lerna run --parallel build",
     "deploy": "lerna exec --scope web -- \\$LERNA_ROOT_PATH/cicd/scripts/deploy.sh",
     "test:docker:up": "docker-compose -f ./envs/test/docker-compose.yml up --build -d",
     "test:docker:down": "docker-compose -f ./envs/test/docker-compose.yml down"
