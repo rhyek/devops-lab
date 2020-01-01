@@ -1,5 +1,5 @@
 {
-  "name": "app-web",
+  "name": "web",
   "scripts": {
     "dev": "PORT=3000 BROWSER=none SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "test": "react-scripts test",

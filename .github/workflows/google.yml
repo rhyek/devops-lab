@@ -26,7 +26,7 @@ env:
 jobs:
   phaseOne:
     name: Setup, Build, Publish, and Deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -43,34 +43,13 @@ jobs:
           # Set up docker to authenticate
           # via gcloud command-line tool.
           gcloud auth configure-docker
-
-      # Build the Docker images
-      - name: Build all
-        run: |
-          docker build -t devops-lab/builder -f ./cicd/builder.Dockerfile . | tee build.log
-          echo "::set-env name=WEB_BUILD_HASH::$(grep -zoP '(?<=app-web: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
-          echo "::set-env name=TODOS_BUILD_HASH::$(grep -zoP '(?<=service-todos: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
           gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
 
-      - name: Obtain deployed build hashes
-        run: |
-          echo "::set-env name=DEPLOYED_WEB_BUILD_HASH::$(kubectl get deployment app-web -o jsonpath='{.metadata.annotations.buildHash}')"
-          echo "::set-env name=DEPLOYED_TODOS_BUILD_HASH::$(kubectl get deployment service-todos -o jsonpath='{.metadata.annotations.buildHash}')"
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.18'
 
-      - name: Deploy Web
-        if: env.WEB_BUILD_HASH != env.DEPLOYED_WEB_BUILD_HASH
-        run: |
-          echo "Deploying because [$WEB_BUILD_HASH] is different from [$DEPLOYED_WEB_BUILD_HASH]."
-          docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
-          docker push gcr.io/$GKE_PROJECT/web
-          kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$GITHUB_SHA
-          kubectl annotate deployment app-web buildHash=$WEB_BUILD_HASH --overwrite
-
-      - name: Deploy Todos
-        if: env.TODOS_BUILD_HASH != env.DEPLOYED_TODOS_BUILD_HASH
-        run: |
-          echo "Deploying because [$TODOS_BUILD_HASH] is different from [$DEPLOYED_TODOS_BUILD_HASH]."
-          docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
-          docker push gcr.io/$GKE_PROJECT/todos
-          kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA
-          kubectl annotate deployment service-todos buildHash=$TODOS_BUILD_HASH --overwrite
+      - run: npm ci --production
+      - run: npx lerna bootstrap --ci -- --production
+      - run: npm run build
+      - run: npm run deploy

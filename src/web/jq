@@ -1,0 +1,31 @@
+Ignoring param ".0"
+{ name: 'build', hash: '1e76b0d6f11d04e676e101d6a04529a700792648d68acd8c7f57fa7292cc80ff,'
+  children: [
+    { name: 'asset-manifest.json', hash: 'ec539a4db842c2812357d9a2c5f544e636b48a8bbc672234915f1b4ffc26394a' }
+    { name: 'favicon.ico', hash: 'c0bf133d86d14e912e468c11e544c3c646a2d86ad8d5f3859756481438990229' }
+    { name: 'index.html', hash: 'fdeabab905f9c4bc65312b228d1aaa9ce5583feffa6a69def01620493e197642' }
+    { name: 'logo192.png', hash: 'f3313e28dd23c1041df9d0e9f5097bd14b576852ae65da8c597c0b5587c6f242' }
+    { name: 'logo512.png', hash: 'a900c7fe5630a9eb7d09460e510a1926f07938deb6142d00463674f1622fe3fb' }
+    { name: 'manifest.json', hash: '66646463376e86d0c9032c43cd1f8af493d006a4348daae1f15fdf1b0a992cc6' }
+    { name: 'precache-manifest.5395bcfdf7a18abfc2816e58b835cbaf.js', hash: 'ad1a137e3c6a9f8bb322351bd04d3817da4d41609e4e9086e3e7cb624e2a7f78' }
+    { name: 'robots.txt', hash: '54d62bbb80772df9b52d41b3b741dbb82bf7116b4c5a74152df26bce335069ee' }
+    { name: 'service-worker.js', hash: '6becb7a3e9584f350b11cda1e25bbe6595b0ca23d49f269a7d9ecf40a7646ee0' }
+    { name: 'static', hash: '893f37a24a33b8310f1d40aae4265a343f0efb9444bb247fe4330190f2882f89,'
+      children: [
+        { name: 'css', hash: 'd4b87a1c1e468fb5979935384cba4e1083fecba19af290750fe3bdfdefc7f8ea,'
+          children: [
+            { name: 'main.5ecd60fb.chunk.css', hash: '3cf3f5761a47e7aac9b60550534a1979c7aa375bb36cf27e42a4a0b8a191093e' }
+            { name: 'main.5ecd60fb.chunk.css.map', hash: 'e44fff06dc20a8234ce430fef2fdbcd6c5a6e7c80f57e410da55bd972e011c38' }
+          ]}
+        { name: 'js', hash: 'b57a46038e90774f2bd549df0b25d9ea4fc9807247ca6569e0476a42b0186d4e,'
+          children: [
+            { name: '2.45a321ec.chunk.js', hash: '208ee42e053d281f4b999dd8e2ab67a90609ee673eb999e6116ebc1ec5e667b9' }
+            { name: '2.45a321ec.chunk.js.LICENSE', hash: '07ae7cd98eefcb82a813d06293c3e78e4bfa00449c1ef944ed32a717565b7ae1' }
+            { name: '2.45a321ec.chunk.js.map', hash: '045e6495ff0ae5ef934a922270b5ad3fff71f30bb6581f3bf167dd584d2cbe7b' }
+            { name: 'main.f9763f2f.chunk.js', hash: '051887d8aed097609aba33d1eb91bc2999a9d5902d939a3e417b1bfad1684891' }
+            { name: 'main.f9763f2f.chunk.js.map', hash: '09835d3cfe825e4cbd9fe4f3e051ad38e4cba3c659d572bbf749003f05d4a999' }
+            { name: 'runtime-main.7c2e5695.js', hash: '51a253ad3f40161f6816acddc3d6f83bddd82a7742a28d2c481a4ab696e06597' }
+            { name: 'runtime-main.7c2e5695.js.map', hash: '4224c682cddcebe2b7273f05bbad214c86a17ad8a1b3739d33b9c9708996acca' }
+          ]}
+      ]}
+  ]}

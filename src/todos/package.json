@@ -1,5 +1,5 @@
 {
-  "name": "service-todos",
+  "name": "todos",
   "scripts": {
     "dev": "$(bin-up ts-node-dev) src/main.ts",
     "build": "$(bin-up webpack) --config ./webpack.config.ts"
