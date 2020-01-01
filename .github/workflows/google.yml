@@ -51,7 +51,7 @@ jobs:
           echo "::set-env name=WEB_BUILD_HASH::$(grep -zoP '(?<=app-web: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
           echo "::set-env name=TODOS_BUILD_HASH::$(grep -zoP '(?<=service-todos: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
 
-      - name: Build Individual
+      - name: Create Lean Images
         run: |
           docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
           docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
@@ -60,3 +60,8 @@ jobs:
         run: |
           docker push gcr.io/$GKE_PROJECT/web
           docker push gcr.io/$GKE_PROJECT/todos
+
+      - name: Deploy
+        run: |
+          kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$WEB_BUILD_HASH
+          kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$TODOS_BUILD_HASH
