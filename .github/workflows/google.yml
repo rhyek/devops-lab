@@ -55,14 +55,14 @@ jobs:
           gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
 
       - name: Deploy Web
-        if: $WEB_BUILD_HASH != $(kubectl get deployment app-web -o jsonpath='{.metadata.annotations.buildHash}’)
+        if: env.WEB_BUILD_HASH != $(kubectl get deployment app-web -o jsonpath='{.metadata.annotations.buildHash}’)
         run: |
           docker push gcr.io/$GKE_PROJECT/web
           kubectl set image deployments/app-web web=gcr.io/$GKE_PROJECT/web:$GITHUB_SHA
           kubectl annotate deployment app-web buildHash=$WEB_BUILD_HASH
 
       - name: Deploy Todos
-        if: $TODOS_BUILD_HASH != $(kubectl get deployment service-todos -o jsonpath='{.metadata.annotations.buildHash}’)
+        if: env.TODOS_BUILD_HASH != $(kubectl get deployment service-todos -o jsonpath='{.metadata.annotations.buildHash}’)
         run: |
           docker push gcr.io/$GKE_PROJECT/todos
           kubectl set image deployments/service-todos todos=gcr.io/$GKE_PROJECT/todos:$GITHUB_SHA
