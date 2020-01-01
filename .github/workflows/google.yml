@@ -45,11 +45,13 @@ jobs:
           gcloud auth configure-docker
 
       # Build the Docker images
-      - name: Build
+      - name: Build All
         run: |
           docker build -t devops-lab/builder -f ./cicd/builder.Dockerfile . | tee build.log
           echo "::set-env name=WEB_BUILD_HASH::$(grep -zoP '(?<=app-web: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
           echo "::set-env name=TODOS_BUILD_HASH::$(grep -zoP '(?<=service-todos: BUILD_HASH: )(.+)(?=\n)' ./build.log)"
+
+      - name: Build Individual
           docker build -t devops-lab/web -t gcr.io/$GKE_PROJECT/web:$TODOS_BUILD_HASH -t gcr.io/$GKE_PROJECT/web:latest -f ./src/app-web/Dockerfile .
           docker build -t devops-lab/todos -t gcr.io/$GKE_PROJECT/todos:$WEB_BUILD_HASH -t gcr.io/$GKE_PROJECT/todos:latest -f ./src/service-todos/Dockerfile .
 
