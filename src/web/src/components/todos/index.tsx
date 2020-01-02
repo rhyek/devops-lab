@@ -26,7 +26,7 @@ export default function Todos() {
 
   return (
     <Main>
-      <Title>Todos</Title>
+      <Title>Todos:</Title>
       <TodosContext.Provider value={{ todos, load }}>
         <TodosList />
       </TodosContext.Provider>
