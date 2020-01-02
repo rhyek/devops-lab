@@ -28,28 +28,36 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-18.04
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@master
 
       # Setup gcloud CLI
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - name: Setup gcloud
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
           version: '270.0.0'
           service_account_email: ${{ secrets.GKE_EMAIL }}
           service_account_key: ${{ secrets.GKE_KEY }}
 
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - run: |
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.18'
+
+      - name: Install npm dependencies
+        run: |
+          npm ci --production
+          npx lerna bootstrap --ci -- --production
+
+      - name: Build apps
+        run: npm run build
+
+      - name: Configure docker and kubectl
+        run: |
           # Set up docker to authenticate
           # via gcloud command-line tool.
           gcloud auth configure-docker
           gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
 
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '10.18'
-
-      - run: npm ci --production
-      - run: npx lerna bootstrap --ci -- --production
-      - run: npm run build
-      - run: npm run deploy
+      - name: Deploy
+        run: npm run deploy
