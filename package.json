@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "lerna run --parallel dev",
     "build": "lerna run --parallel build",
-    "deploy": "lerna exec -- \\$LERNA_ROOT_PATH/cicd/scripts/deploy.sh",
+    "deploy": "lerna exec --parallel -- \\$LERNA_ROOT_PATH/cicd/scripts/deploy.sh",
     "test:docker:up": "docker-compose -f ./envs/test/docker-compose.yml up --build -d",
     "test:docker:down": "docker-compose -f ./envs/test/docker-compose.yml down"
   },

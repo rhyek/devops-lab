@@ -1,6 +1,6 @@
 const { hashElement } = require('folder-hash');
 
-const path = process.argv[1];
+const path = process.argv[2];
 
 hashElement(path, {
   algo: 'sha256',
