@@ -39,6 +39,13 @@ jobs:
           service_account_email: ${{ secrets.GKE_EMAIL }}
           service_account_key: ${{ secrets.GKE_KEY }}
 
+      - name: Setup docker and kubectl
+        run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
+
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -49,15 +56,8 @@ jobs:
           npm ci --production
           npx lerna bootstrap --ci -- --production
 
-      - name: Build apps
+      - name: Build all apps
         run: npm run build
 
-      - name: Configure docker and kubectl
-        run: |
-          # Set up docker to authenticate
-          # via gcloud command-line tool.
-          gcloud auth configure-docker
-          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
-
-      - name: Deploy
+      - name: Deploy modified apps
         run: npm run deploy
