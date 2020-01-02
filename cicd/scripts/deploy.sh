@@ -3,7 +3,7 @@ BUILD_HASH=$(node $(dirname "$0")/gen-hash.js ./build)
 DEPLOYED_BUILD_HASH=$(kubectl get deployment $LERNA_PACKAGE_NAME -o jsonpath='{.metadata.annotations.buildHash}')
 APP=$LERNA_PACKAGE_NAME
 
-if [ "$BUILD_HASH" = "d$DEPLOYED_BUILD_HASH" ]; then
+if [ "$BUILD_HASH" = "$DEPLOYED_BUILD_HASH" ]; then
   echo "Build hashes are equal. Not deploying."
 else
   echo "Deploying because [$BUILD_HASH] is different from [$DEPLOYED_BUILD_HASH]."
