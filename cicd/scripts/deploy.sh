@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 APP=$LERNA_PACKAGE_NAME
 APP_FOLDER=$LERNA_ROOT_PATH/src/$APP
 BUILD_HASH=$(node $(dirname "$0")/gen-hash.js $APP_FOLDER/build)
