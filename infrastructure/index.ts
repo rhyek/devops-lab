@@ -99,12 +99,16 @@ function createApp(name: string, image: string, options: AppOptions) {
   if (typeof options.path !== 'undefined') {
     paths.push({
       name,
+      path: options.path,
+    });
+    paths.push({
+      name,
       path: `${options.path}/*`,
     });
   }
 }
 
-createApp('web', 'gcr.io/rhyek-devops-lab-1/web:latest', { path: '' });
+createApp('web', 'gcr.io/rhyek-devops-lab-1/web:latest', { path: '/' });
 createApp('todos', 'gcr.io/rhyek-devops-lab-1/todos:latest', { path: '/todos' });
 
 const address = new gcp.compute.GlobalAddress('all-ip', {

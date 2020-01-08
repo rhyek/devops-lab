@@ -1,4 +1,4 @@
 config:
-  gcp:project: rhyek-devops-lab-1
+  gcp:project: rhyek-devops-lab-2
   gcp:region: us-central1
   gcp:zone: us-central1-a

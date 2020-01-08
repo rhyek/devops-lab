@@ -21,11 +21,10 @@ env:
   GKE_EMAIL: ${{ secrets.GKE_EMAIL }}
   GITHUB_SHA: ${{ github.sha }}
   GKE_ZONE: us-central1-a
-  GKE_CLUSTER: standard-cluster-1
 
 jobs:
-  phaseOne:
-    name: Setup, Build, Publish, and Deploy
+  images:
+    name: Build and publish Docker images
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout repo
@@ -44,7 +43,7 @@ jobs:
           # Set up docker to authenticate
           # via gcloud command-line tool.
           gcloud auth configure-docker
-          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
+          # gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
 
       - name: Setup node
         uses: actions/setup-node@v1
@@ -59,5 +58,5 @@ jobs:
       - name: Build all apps
         run: npm run build
 
-      - name: Deploy modified apps
+      - name: Publish images
         run: npm run deploy
