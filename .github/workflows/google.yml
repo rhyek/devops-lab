@@ -26,10 +26,6 @@ jobs:
   images:
     name: Build and publish Docker images
     runs-on: ubuntu-18.04
-    container:
-      image: node:10.18-alpine3.9
-      volumes:
-        - /tmp
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
