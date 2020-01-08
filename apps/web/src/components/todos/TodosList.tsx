@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, FormEvent, useContext } from 'react';
 import uuid from 'uuid/v4';
 import styled from 'styled-components';
-import { Todo } from '../../../../shared/types/todos';
+import { Todo } from '../../../../@shared/types/todos';
 import TodoItem from './TodoItem';
 import TodosContext from './TodosContext';
 import backend from '../../utils/backend';

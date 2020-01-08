@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import TodosContext from './TodosContext';
 import TodosList from './TodosList';
-import { Todo } from '../../../../shared/types/todos';
+import { Todo } from '../../../../@shared/types/todos';
 import backend from '../../utils/backend';
 
 const Main = styled.div`

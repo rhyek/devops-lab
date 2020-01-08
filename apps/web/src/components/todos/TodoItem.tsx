@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
-import { Todo } from '../../../../shared/types/todos';
+import { Todo } from '../../../../@shared/types/todos';
 import TodosContext from './TodosContext';
 import backend from '../../utils/backend';
 

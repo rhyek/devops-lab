@@ -1,6 +1,6 @@
 import { NotFound } from 'http-errors';
-import { createHttpApp } from '../../shared/utils/services/http';
-import { Todo } from '../../shared/types/todos';
+import { createHttpApp } from '../../@shared/utils/services/http';
+import { Todo } from '../../@shared/types/todos';
 
 const todos: Todo[] = [];
 
