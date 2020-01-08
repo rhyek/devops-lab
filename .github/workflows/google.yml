@@ -26,6 +26,8 @@ jobs:
   images:
     name: Build and publish Docker images
     runs-on: ubuntu-18.04
+    container:
+      image: node:10.18-alpine3.9
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
@@ -59,4 +61,20 @@ jobs:
         run: npm run build
 
       - name: Publish images
-        run: npm run deploy
+        run: npm run publish
+
+  infrastructure:
+    name: Update infrastructure
+    runs-on: ubuntu-18.04
+    needs: [images]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - run: cd ./infrastructure
+      - uses: docker://pulumi/actions
+        with:
+          args: up
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GKE_KEY_RAW }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CI: up
