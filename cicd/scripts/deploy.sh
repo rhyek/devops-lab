@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 APP=$LERNA_PACKAGE_NAME
-APP_FOLDER=$LERNA_ROOT_PATH/src/$APP
+APP_FOLDER=$LERNA_ROOT_PATH/apps/$APP
 BUILD_HASH=$(node $(dirname "$0")/gen-hash.js $APP_FOLDER/build)
 # DEPLOYED_BUILD_HASH=$(kubectl get deployment $APP -o jsonpath='{.metadata.annotations.buildHash}')
 
