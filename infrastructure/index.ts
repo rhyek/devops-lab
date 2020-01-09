@@ -3,7 +3,7 @@ import * as gcp from '@pulumi/gcp';
 import * as k8s from '@pulumi/kubernetes';
 import { getKubeConfig } from './utils/kubeconfig';
 
-const config = new pulumi.Config();
+const gcpConfig = new pulumi.Config('gcp');
 
 const name = 'iac-cluster';
 
@@ -44,7 +44,7 @@ const paths: { name: string; path: string }[] = [];
 const buildHashes: { appName: string; result: string }[] = JSON.parse(process.env.BUILD_HASHES!);
 
 function createApp(name: string, options: AppOptions) {
-  const project = config.require('gcp:project');
+  const project = gcpConfig.require('project');
   const buildHash = buildHashes.find(b => b.appName === name);
   if (!buildHash) {
     throw new Error(`Build hash not found for app ${name}.`);
