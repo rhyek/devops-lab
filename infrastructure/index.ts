@@ -8,7 +8,7 @@ const gcpConfig = new pulumi.Config('gcp');
 const name = 'iac-cluster';
 
 const cluster = new gcp.container.Cluster(name, {
-  initialNodeCount: 1,
+  initialNodeCount: 2,
   releaseChannel: { channel: 'REGULAR' },
   nodeConfig: {
     machineType: 'n1-standard-1',
@@ -39,7 +39,7 @@ type AppOptions = {
   path?: string | string[];
 };
 
-const paths: { name: string; path: string }[] = [];
+const pathConfigurations: { name: string | pulumi.Output<string>; path: string }[] = [];
 
 const buildHashes: { appName: string; result: string }[] = JSON.parse(process.env.BUILD_HASHES!);
 
@@ -82,15 +82,9 @@ function createApp(name: string, options: AppOptions) {
     },
     { provider: clusterProvider },
   );
-  new k8s.core.v1.Service(
+  const nodePort = new k8s.core.v1.Service(
     name,
     {
-      apiVersion: 'v1',
-      kind: 'Service',
-      metadata: {
-        name,
-        labels,
-      },
       spec: {
         type: 'NodePort',
         selector: labels,
@@ -104,19 +98,14 @@ function createApp(name: string, options: AppOptions) {
     },
     { provider: clusterProvider },
   );
+
   if (typeof options.path !== 'undefined') {
-    if (typeof options.path === 'string') {
-      paths.push({
-        name,
-        path: options.path,
+    let paths: string[] = typeof options.path === 'string' ? [options.path] : options.path;
+    for (const path of paths) {
+      pathConfigurations.push({
+        name: nodePort.metadata.name,
+        path,
       });
-    } else {
-      for (const p of options.path) {
-        paths.push({
-          name,
-          path: p,
-        });
-      }
     }
   }
 }
@@ -136,9 +125,7 @@ export const staticIp = address.address;
 new k8s.networking.v1beta1.Ingress(
   'all-ingress',
   {
-    kind: 'Ingress',
     metadata: {
-      name: 'all-ingress',
       annotations: {
         'kubernetes.io/ingress.global-static-ip-name': address.name,
         'kubernetes.io/ingress.class': 'gce',
@@ -148,7 +135,7 @@ new k8s.networking.v1beta1.Ingress(
       rules: [
         {
           http: {
-            paths: paths.map(({ name, path }) => ({
+            paths: pathConfigurations.map(({ name, path }) => ({
               path,
               backend: {
                 serviceName: name,

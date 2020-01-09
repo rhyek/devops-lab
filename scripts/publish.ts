@@ -12,15 +12,9 @@ async function main() {
         encoding: 'hex',
       });
       log('build hash:', buildHash);
-      await logStdio(
-        spawn(
-          'docker',
-          `build -t devops-lab/${appName} -t gcr.io/${process.env.GKE_PROJECT}/${appName}:${buildHash} -t gcr.io/${process.env.GKE_PROJECT}/${appName}:latest ${path}`.split(
-            ' ',
-          ),
-        ),
-      );
-      await logStdio(spawn('docker', `push gcr.io/${process.env.GKE_PROJECT}/${appName}`.split(' ')));
+      const taggedImageName = `gcr.io/${process.env.GKE_PROJECT}/${appName}:${buildHash}`;
+      await logStdio(spawn('docker', `build -t ${taggedImageName} ${path}`.split(' ')));
+      await logStdio(spawn('docker', `push ${taggedImageName}`.split(' ')));
       return buildHash;
     });
 
