@@ -1,8 +1,10 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as gcp from '@pulumi/gcp';
 import * as k8s from '@pulumi/kubernetes';
 import { getKubeConfig } from './utils/kubeconfig';
 
-const name = 'iac-cluster';
+const config = new pulumi.Config();
+
 const cluster = new gcp.container.Cluster(name, {
   initialNodeCount: 1,
   releaseChannel: { channel: 'REGULAR' },
@@ -37,7 +39,15 @@ type AppOptions = {
 
 const paths: { name: string; path: string }[] = [];
 
-function createApp(name: string, image: string, options: AppOptions) {
+const buildHashes: { appName: string; result: string }[] = JSON.parse(process.env.BUILD_HASHES!);
+
+function createApp(name: string, options: AppOptions) {
+  const project = config.require('gcp:project');
+  const buildHash = buildHashes.find(b => b.appName === name);
+  if (!buildHash) {
+    throw new Error(`Build hash not found for app ${name}.`);
+  }
+  const image = `gcr.io/${project}/${name}:${buildHash.result}`;
   const replicas = options.replicas ?? 1;
   const labels = { app: name };
   new k8s.apps.v1.Deployment(
@@ -108,8 +118,8 @@ function createApp(name: string, image: string, options: AppOptions) {
   }
 }
 
-createApp('web', 'gcr.io/rhyek-devops-lab-1/web:latest', { path: '/' });
-createApp('todos', 'gcr.io/rhyek-devops-lab-1/todos:latest', { path: '/todos' });
+createApp('web', { path: '/' });
+createApp('todos', { path: '/todos' });
 
 const address = new gcp.compute.GlobalAddress('all-ip', {
   addressType: 'EXTERNAL',
