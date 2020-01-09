@@ -36,7 +36,7 @@ const clusterProvider = new k8s.Provider(name, { kubeconfig });
 
 type AppOptions = {
   replicas?: number;
-  path?: string;
+  path?: string | string[];
 };
 
 const paths: { name: string; path: string }[] = [];
@@ -55,10 +55,6 @@ function createApp(name: string, options: AppOptions) {
   new k8s.apps.v1.Deployment(
     name,
     {
-      kind: 'Deployment',
-      metadata: {
-        name,
-      },
       spec: {
         replicas,
         selector: {
@@ -109,19 +105,24 @@ function createApp(name: string, options: AppOptions) {
     { provider: clusterProvider },
   );
   if (typeof options.path !== 'undefined') {
-    paths.push({
-      name,
-      path: options.path,
-    });
-    paths.push({
-      name,
-      path: `${options.path}/*`,
-    });
+    if (typeof options.path === 'string') {
+      paths.push({
+        name,
+        path: options.path,
+      });
+    } else {
+      for (const p of options.path) {
+        paths.push({
+          name,
+          path: p,
+        });
+      }
+    }
   }
 }
 
-createApp('web', { path: '/' });
-createApp('todos', { path: '/todos' });
+createApp('web', { path: '/*' });
+createApp('todos', { path: ['/todos', '/todos/*'] });
 
 const address = new gcp.compute.GlobalAddress('all-ip', {
   addressType: 'EXTERNAL',

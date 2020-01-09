@@ -7,7 +7,7 @@ import packages from './utils/packages';
 async function main() {
   try {
     const results = await packages(async ({ appName, path, log, logStdio }) => {
-      const { hash: buildHash } = await hashElement(path, {
+      const { hash: buildHash } = await hashElement(`${path}/build`, {
         algo: 'sha256',
         encoding: 'hex',
       });
