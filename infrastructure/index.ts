@@ -5,6 +5,8 @@ import { getKubeConfig } from './utils/kubeconfig';
 
 const config = new pulumi.Config();
 
+const name = 'iac-cluster';
+
 const cluster = new gcp.container.Cluster(name, {
   initialNodeCount: 1,
   releaseChannel: { channel: 'REGULAR' },

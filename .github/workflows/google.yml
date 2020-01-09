@@ -59,10 +59,10 @@ jobs:
         run: npm run build
 
       - name: Publish images
-        run: npm run publish
-
-      - id: build_hashes
-        run: echo ::set-output name=result::$(cat ./build-hashes.json)
+        id: publish_images
+        run: |
+          npm run publish
+          echo ::set-output name=build_hashes::$(cat ./build-hashes.json)
 
       - name: Update infrastructure
         uses: docker://pulumi/actions
@@ -73,4 +73,4 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GKE_KEY_RAW }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           PULUMI_CI: up
-          BUILD_HASHES: ${{ steps.build_hashes.outputs.result }}
+          BUILD_HASHES: ${{ steps.publish_images.outputs.build_hashes }}
