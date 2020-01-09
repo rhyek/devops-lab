@@ -6,7 +6,7 @@ import { ChildProcessPromise } from 'promisify-child-process';
 type Params = {
   appName: string;
   path: string;
-  log: (...args: string[]) => void;
+  log: (...args: any[]) => void;
   logStdio: (childProcessPromise: ChildProcessPromise) => ChildProcessPromise;
 };
 
@@ -21,7 +21,7 @@ export default async function packages<T>(
         package: { name: appName },
       } = pkg;
 
-      function log(...args: string[]) {
+      function log(...args: any[]) {
         console.log(`${appName}:`, ...args);
       }
 

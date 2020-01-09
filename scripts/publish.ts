@@ -11,10 +11,25 @@ async function main() {
         algo: 'sha256',
         encoding: 'hex',
       });
-      log('build hash:', buildHash);
-      const taggedImageName = `gcr.io/${process.env.GKE_PROJECT}/${appName}:${buildHash}`;
-      await logStdio(spawn('docker', `build -t ${taggedImageName} ${path}`.split(' ')));
-      await logStdio(spawn('docker', `push ${taggedImageName}`.split(' ')));
+      log('Build hash:', buildHash);
+      const imageRepository = `gcr.io/${process.env.GKE_PROJECT}/${appName}`;
+      const { stdout } = await spawn(
+        'gcloud',
+        `container images list-tags --filter=tags:${buildHash} --format=json ${imageRepository}`.split(' '),
+        { encoding: 'utf8' },
+      );
+      if (!stdout) {
+        throw new Error('stdout is empty');
+      }
+      const foundList: object[] = JSON.parse(stdout.toString());
+      if (foundList.length === 0) {
+        log('Tag does not exist in registry. Building...');
+        const taggedImageName = `${imageRepository}:${buildHash}`;
+        await logStdio(spawn('docker', `build -t ${taggedImageName} ${path}`.split(' ')));
+        await logStdio(spawn('docker', `push ${taggedImageName}`.split(' ')));
+      } else {
+        log('Tag exists in registry. Skipping build.');
+      }
       return buildHash;
     });
 
