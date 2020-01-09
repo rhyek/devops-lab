@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "lerna run --parallel dev",
     "build": "lerna run --parallel build",
-    "publish": "ts-node scripts/publish.ts",
-    "old_publish": "lerna exec --parallel \\$LERNA_ROOT_PATH/scripts/publish.sh",
-    "test:docker:up": "docker-compose -f ./envs/test/docker-compose.yml up --build -d",
-    "test:docker:down": "docker-compose -f ./envs/test/docker-compose.yml down"
+    "publish": "ts-node scripts/publish.ts"
   },
   "keywords": [],
   "author": "",
