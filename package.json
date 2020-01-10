@@ -1,7 +1,7 @@
 {
   "name": "devops-lab",
   "version": "1.0.0",
-  "description": "",
+  "description": "hi",
   "main": "index.js",
   "scripts": {
     "dev": "lerna run --parallel dev",
