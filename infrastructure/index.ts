@@ -74,11 +74,11 @@ function createApp(name: string, options: AppOptions) {
                     containerPort: tcpPort,
                   },
                 ],
-                resources: {
-                  requests: {
-                    cpu: '10m',
-                  },
-                },
+                // resources: {
+                //   requests: {
+                //     cpu: '10m',
+                //   },
+                // },
               },
             ],
           },
