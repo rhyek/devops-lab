@@ -35,7 +35,7 @@ async function main() {
 
     fs.writeFileSync('build-hashes.json', JSON.stringify(results, null, 2));
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     process.exit(1);
   }
 }

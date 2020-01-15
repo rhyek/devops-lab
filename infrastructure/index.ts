@@ -8,7 +8,7 @@ const gcpConfig = new pulumi.Config('gcp');
 const name = 'iac-cluster';
 
 const cluster = new gcp.container.Cluster(name, {
-  initialNodeCount: 2,
+  initialNodeCount: 1,
   releaseChannel: { channel: 'REGULAR' },
   nodeConfig: {
     machineType: 'n1-standard-1',
@@ -74,6 +74,11 @@ function createApp(name: string, options: AppOptions) {
                     containerPort: tcpPort,
                   },
                 ],
+                resources: {
+                  requests: {
+                    cpu: '10m',
+                  },
+                },
               },
             ],
           },
@@ -110,13 +115,41 @@ function createApp(name: string, options: AppOptions) {
   }
 }
 
+new k8s.core.v1.LimitRange( // this allows me to just use 1 node.
+  'default-limit',
+  {
+    spec: {
+      limits: [
+        {
+          // will set request on containers
+          defaultRequest: {
+            cpu: '10m',
+            memory: '128M',
+          },
+          // will set limit on containers
+          default: {
+            cpu: '20m',
+            memory: '256M',
+          },
+          // will set
+          max: {
+            cpu: '200m',
+            memory: '512M',
+          },
+          type: 'Container',
+        },
+      ],
+    },
+  },
+  { provider: clusterProvider },
+);
+
 createApp('web', { path: '/*' });
 createApp('todos', { path: ['/todos', '/todos/*'] });
 
 const address = new gcp.compute.GlobalAddress('all-ip', {
   addressType: 'EXTERNAL',
   ipVersion: 'IPV4',
-
   // networkTier: 'STANDARD', // default is PREMIUM
 });
 
