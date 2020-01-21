@@ -1,0 +1,7 @@
+{
+  "name": "team-members",
+  "scripts": {
+    "build": "go build -o ./build/main",
+    "dev": "./air -c ./.air.conf"
+  }
+}
